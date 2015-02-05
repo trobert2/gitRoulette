@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src= "{{ url_for('static', filename='rouletteApp.js') }}"></script>
+</head>
+
+<body>
+<div ng-app="timerTenK" ng-init="existingUsers={{existingUsers}}">
+
+<b>Users Are:</b>
+<p ng-repeat="user in existingUsers">{[ user.username ]}</p>
+<p ng-repeat="user in existingUsers">{[ user.email ]}</p>
+
+</div>
+</body>
+
+</html>
