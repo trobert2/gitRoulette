@@ -8,11 +8,10 @@
 </head>
 
 <body>
-<div ng-app="timerTenK" ng-init="existingUsers={{existingUsers}}">
+<div ng-app="rouletteApp" ng-init="existingUsers={{existingUsers}}">
 
 <b>Users Are:</b>
-<p ng-repeat="user in existingUsers">{[ user.username ]}</p>
-<p ng-repeat="user in existingUsers">{[ user.email ]}</p>
+<p ng-repeat="user in existingUsers"> Username: {[ user.username ]} Email: {[ user.email ]}</p>
 
 </div>
 </body>
