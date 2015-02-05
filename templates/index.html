@@ -27,14 +27,12 @@
 			</form>
 
 			<br>
-			    <!--  -->
 
-		
 			<table class="table table-striped" >
 			<tr ng-repeat="url in existing">
-				<td>{[url.name]} :</td> 
-				<td><a>{[url.url]}</a></td>
-				<td><button class="btn btn-danger btn-sm" ng-click="removeUrl(url)" >remove</button></td>
+				<td class="col-md-2">{[url.name]} :</td> 
+				<td class="col-md-6"><a>{[url.url]}</a></td>
+				<td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2" ng-click="removeUrl(url)" >remove</button></td>
 			</tr>
 			</table>
 		</div>

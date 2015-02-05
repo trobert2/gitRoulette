@@ -17,7 +17,7 @@ connection = MongoClient(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
 
 @app.route('/', methods=['GET'])
 def index():
-    db = connection['mainAPP'] 
+    db = connection['mainAPP']
     collection = db.urls
     urls = collection.find()
     existing_urls = []
@@ -58,6 +58,19 @@ def add_for_review():
         collection.insert(json.loads(request.data))
 
     return "test"
+
+@app.route('/remove_from_list', methods=['GET', 'POST'])
+def remove_user_skill():
+    req_data = json.loads(request.data)
+
+    db = connection['mainAPP']
+    collection = db.urls
+    urls = collection.find({'name': req_data['name'], 'url': req_data['url']})
+
+    if request.method == 'POST':
+        for url in urls:
+            collection.remove(url)
+    return "aa"
 
 if __name__ == '__main__':
     #remove debug=True for production!

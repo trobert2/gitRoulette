@@ -40,4 +40,22 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
 
         $scope._new = '';
     };
+
+    $scope.removeUrl = function (url) {
+        for (var i=0; i < $scope.existing.length; i++){
+            if ($scope.existing[i]["url"] == url['url']){
+                $scope.existing.splice(i, 1)
+
+            $http({
+                method: "post",
+                url: "/remove_from_list",
+                headers: {'Content-Type': "application/json"},
+                data: url
+            }).success(function () {
+                console.log("success!");
+            });
+            }
+        }
+    };
+
 }]);
