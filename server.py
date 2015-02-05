@@ -18,10 +18,16 @@ connection = MongoClient(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
 @app.route('/', methods=['GET'])
 def index():
     db = connection['mainAPP'] 
-    collection = db.users
-    users = collection.find()
-    existing_users = []
-    return render_template("index.html")
+    collection = db.urls
+    urls = collection.find()
+    existing_urls = []
+
+    for url in urls:
+        usr = {'name': str(url['name']),
+               'url': str(url['url'])}
+        existing_urls.append(usr)
+
+    return render_template("index.html", existing=json.dumps(existing_urls))
 
 
 @app.route('/login')
@@ -30,7 +36,7 @@ def login():
 
 @app.route('/users/', methods=['GET'])
 def show_users():
-    db = connection['mainAPP'] 
+    db = connection['mainAPP']
     collection = db.users
     users = collection.find()
     existing_users = []
@@ -42,7 +48,17 @@ def show_users():
         existing_users.append(usr)
 
     return render_template("users.html", existingUsers=json.dumps(existing_users))
-    
+
+@app.route('/add_for_review', methods=['GET', 'POST'])
+def add_for_review():
+    db = connection['mainAPP']
+    collection = db.urls
+
+    if request.method == 'POST':
+        collection.insert(json.loads(request.data))
+
+    return "test"
+
 if __name__ == '__main__':
     #remove debug=True for production!
     app.run(host='0.0.0.0', port=8080, debug=True)

@@ -2,14 +2,28 @@
 <html>
 
 <head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
 <script src= "{{ url_for('static', filename='rouletteApp.js') }}"></script>
 </head>
 
-<body>
-<div ng-app="timerTenK" ng-init="existingUsers={{existingUsers}}">
-<h1>INDEX ROULETTE</h1>
-</div>
+<body ng-app="rouletteApp" ng-init="existing={{existing}}">
+	{[existing]}
+	<h1>Index Roulette</h1>
+
+	<div ng-controller="firstController">
+		<form id="todo-form" ng-submit="addForReview()" method="post">
+			<label>Name:</label> <input id="new-name" placeholder="name your addition" ng-model="newName" autofocus>
+			<label>URL:</label>  <input id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus>
+			<button type="button" ng-click="addForReview()">Add for review</button> 	
+		</form>
+
+
+		<ul ng-repeat="url in existing" >
+		    <p>{[url.name]}: {[url.url]} </p>
+		    <!-- <button class="btn btn-default btn-sm" ng-click="removeUrl(url)" >remove</button> -->
+		</ul>
+	</div>
 </body>
 
 </html>
