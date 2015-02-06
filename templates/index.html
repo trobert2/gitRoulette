@@ -20,8 +20,13 @@
 				<input class="form-control" type="text" id="new-name" placeholder="name your addition" ng-model="newName" autofocus>
 				</div>
 				<div class="form-group">
-				<label for="new-url">URL:</label>  
-				<input class="form-control" type="text" id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus></div>
+				<label for="new-url">URL:</label>
+				<input class="form-control" type="text" id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus> 
+
+				<span ng-show="showWarning">Please fill in the fiels</span>
+				<span ng-show="showGithubWarning">Not a github URL</span>
+
+				</div> 
 				<button class="btn btn-sm btn-primary" type="button" ng-click="addForReview()">Add for review</button>
 
 			</form>
@@ -32,6 +37,8 @@
 			<tr ng-repeat="url in existing">
 				<td class="col-md-2">{[url.name]} :</td> 
 				<td class="col-md-6"><a>{[url.url]}</a></td>
+				<!-- <td ng-bind="getStats(url)">  </td> -->
+
 				<td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2" ng-click="removeUrl(url)" >remove</button></td>
 			</tr>
 			</table>
