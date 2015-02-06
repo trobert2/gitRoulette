@@ -8,8 +8,7 @@ app.config(['$interpolateProvider', function ($interpolateProvider) {
 
 app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
     $scope.visible = false;
-    $scope.showWarning = false;
-    $scope.showGithubWarning = false;
+    $scope.stats = {}
 
     $scope.getLocation = function(href) {
         var l = document.createElement("a");
@@ -17,16 +16,12 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
         return l;
     };
 
-    $scope.getStats = function(url) {
-        url = url['url'];
-        var url = $scope.getLocation(url);
+    $scope.getStats = function(gitUrl) {
+        // This should take input the whole object. An id needs to be added so
+        // that we can better assciate the output with the table elements 
+        var url = $scope.getLocation(gitUrl);
         var pathArray = url.pathname.split('/');
 
-        if (url.hostname != "github.com"){
-            //TODO: tell not a github url
-            console.log("Not a github url!");
-            return;
-        }
         $http({
             method: "get",
             url: "https://api.github.com/repos/" + pathArray[1] + "/" + pathArray[2] + "/languages",
@@ -34,7 +29,7 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
                       'Content-Type': "application/json"},
         }).success(function (response) {
             var total = 0;
-            var percentageFinal = {};
+            var percentage = {};
 
             keys = Object.keys(response);
 
@@ -42,20 +37,17 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
                 total += response[keys[i]];
             }
             for (var i=0; i < keys.length; i++){
-                percentageFinal[keys[i]] = response[keys[i]] * 100 / total;
+                percentage[keys[i]] = Math.round((response[keys[i]] * 100 / total)*100)/100;
             }
-            console.log(percentageFinal)
-            return percentageFinal;
+            $scope.stats[gitUrl] = percentage
         });
     };
 
     $scope.addForReview = function () {
-
+        $scope.showWarning = false;
+        $scope.showGithubWarning = false;
         if (!$scope.newName || !$scope.newUrl) {
             $scope.showWarning = true;
-            console.log($scope.newName)
-            console.log($scope.newUrl)
-
             return;
         }
 
@@ -74,7 +66,6 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
 
         var _newUrl = $scope.getLocation(_new);
         if (_newUrl.hostname != "github.com"){
-            console.log(_newUrl.hostname)
             $scope.showGithubWarning = true;
             return;
         }
@@ -119,3 +110,4 @@ app.controller('firstController', ['$scope', '$http', function ($scope, $http) {
     };
 
 }]);
+
