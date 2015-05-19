@@ -10,57 +10,51 @@
 
 <body ng-app="rouletteApp" ng-init="existing={{existing}}; token='{{session['github_token'][0]}}'">
 <br>
-	<!-- {[existing]} -->
 <br>
-<br>
+<div class="col-md-2 navbar-inner" ng-init="menuButton = 'submissions'" style="margin-top: 3.8em;" >
+    <a class="list-group-item" ng-class="{active: menuButton == 'submissions'}" href="" ng-click="menuButton='submissions'">Submited</a></li>
+    <a class="list-group-item" ng-class="{active: menuButton == 'received'}" href="" ng-click="menuButton='received'">Reviews received</a></li>
+    <a class="list-group-item" ng-class="{active: menuButton == 'made'}" href="" ng-click="menuButton='made'">Reviews made</a></li>
+</div>
+
 <div ng-controller="submissions" class"col-centered">
     <div class="col-md-offset-3">
-    <form class="form-inline" id="todo-form" ng-submit="addForReview()" method="post">
-        <div class="form-group">
-        <label for="new-name">Name:</label> 
-        <input class="form-control" type="text" id="new-name" placeholder="name your addition" ng-model="newName" autofocus>
-        </div>
-        <div class="form-group">
-        <label for="new-url">URL:</label>
-        <input class="form-control span6" type="text" id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus> 
-        </div> 
+        <form class="form-inline" id="todo-form" ng-submit="addForReview()" method="post">
+            <div class="form-group">
+                <label for="new-name">Name:</label> 
+                <input class="form-control" type="text" id="new-name" placeholder="name your addition" ng-model="newName" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="new-url">URL:</label>
+                <input class="form-control span6" type="text" id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus> 
+            </div> 
+            <button class="btn btn-sm btn-primary" type="button" ng-click="addForReview()">Add for review</button>
 
-        <button class="btn btn-sm btn-primary" type="button" ng-click="addForReview()">Add for review</button>
-
-        <span class="text-danger" ng-show="showWarning">Please fill in the fiels</span>
-        <span class="text-danger" ng-show="showGithubWarning">Not a github URL</span>
-    </form>
+            <span class="text-danger" ng-show="showWarning">Please fill in the fiels</span>
+            <span class="text-danger" ng-show="showGithubWarning">Not a github URL</span>
+        </form>
     </div>
     <br>
 
-    <div class="col-md-2">
-      <ul class="nav nav-pills nav-stacked">
-        <li ng-class="{active: menuButton == 'submissions'}"><a href="" ng-click="menuButton='submissions'">Submited</a></li>
-        <li ng-class="{active: menuButton == 'received'}"><a href="" ng-click="menuButton='received'">Reviews received</a></li>
-        <li ng-class="{active: menuButton == 'made'}"><a href="" ng-click="menuButton='made'">Reviews made</a></li>
-      </ul>
-    </div>
-
     <div class="container col-md-9">
-    <table class="table table-striped" >
-    <tr>
-        <td>Name</td>
-        <td>URL to be reviewed</td>
-        <td>Project stats</td>
-        <td>Remove from list?</td>
-    </tr>
-    <tr ng-repeat="url in existing">
-        <td class="col-md-2">{[url.name]} :</td> 
-        <td class="col-md-6"><a>{[url.url]}</a></td>
-        <td ng-init="getStats(url.url)"> 
-            <option ng-repeat="(key, value) in stats[url.url]">{[key]}: {[value]} %</option> 
-        </td>
+        <table class="table table-striped" >
+            <tr>
+                <td>Name</td>
+                <td>URL to be reviewed</td>
+                <td>Project stats</td>
+                <td>Remove from list?</td>
+            </tr>
+            <tr ng-repeat="url in existing">
+                <td class="col-md-2">{[url.name]} :</td> 
+                <td class="col-md-6"><a>{[url.url]}</a></td>
+                <td ng-init="getStats(url.url)"> 
+                    <option ng-repeat="(key, value) in stats[url.url]">{[key]}: {[value]} %</option> 
+                </td>
 
-        <td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2" ng-click="removeUrl(url)" >remove</button></td>
-    </tr>
-    </table>
+                <td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2" ng-click="removeUrl(url)" >remove</button></td>
+            </tr>
+        </table>
     </div>
 </div >
 </body>
-
 </html>
