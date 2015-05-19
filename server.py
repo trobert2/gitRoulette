@@ -57,6 +57,7 @@ def authorized():
     session['github_token'] = (resp['access_token'], '')
     #TODO: If it's the first login, add to database so that we can keep track of everything
     me = github.get('user')
+    session['github_user'] = me.data['login']
     return redirect(url_for('index'))
     #return jsonify(me.data)
 
@@ -66,7 +67,7 @@ def index():
     if 'github_token' not in session:
         return redirect(url_for('login'))
 
-    app.logger.debug(session['github_token'])
+    app.logger.debug(session)
     db = connection['mainAPP']
     collection = db.urls
     urls = collection.find()
@@ -74,7 +75,8 @@ def index():
 
     for url in urls:
         usr = {'name': str(url['name']),
-               'url': str(url['url'])}
+               'url': str(url['url']),
+               'github_user': str(url['github_user'])}
         existing_urls.append(usr)
 
     return render_template("index.html", existing=json.dumps(existing_urls))
@@ -101,12 +103,13 @@ def add_for_review():
     collection = db.urls
 
     if request.method == 'POST':
+        app.logger.debug(request.data)
         collection.insert(json.loads(request.data))
 
     return "test"
 
 @app.route('/remove_from_list', methods=['GET', 'POST'])
-def remove_user_skill():
+def remove_from_queue():
     req_data = json.loads(request.data)
 
     db = connection['mainAPP']

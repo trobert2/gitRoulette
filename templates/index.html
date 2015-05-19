@@ -8,7 +8,7 @@
 <script src= "{{ url_for('static', filename='submissions.js') }}"></script>
 </head>
 
-<body ng-app="rouletteApp" ng-init="existing={{existing}}; token='{{session['github_token'][0]}}'">
+<body ng-app="rouletteApp" ng-init="existing={{existing}}; token='{{session['github_token'][0]}}'; github_user='{{session['github_user']}}'">
 <br>
 <br>
 <div class="col-md-2 navbar-inner" ng-init="menuButton = 'submissions'" style="margin-top: 3.8em;" >
@@ -17,7 +17,7 @@
     <a class="list-group-item" ng-class="{active: menuButton == 'made'}" href="" ng-click="menuButton='made'">Reviews made</a></li>
 </div>
 
-<div ng-controller="submissions" class"col-centered">
+<div ng-show="menuButton=='submissions'" ng-controller="submissions" class"col-centered">
     <div class="col-md-offset-3">
         <form class="form-inline" id="todo-form" ng-submit="addForReview()" method="post">
             <div class="form-group">
@@ -56,5 +56,12 @@
         </table>
     </div>
 </div >
+
+<div ng-show="menuButton=='received'">
+    
+</div>
+
+<div ng-show="menuButton=='made'">
+</div>
 </body>
 </html>

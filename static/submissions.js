@@ -2,7 +2,6 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
     
     $scope.visible = false;
     $scope.stats = {};
-    $scope.menuButton = 'submissions';
 
     $scope.getLocation = function(href) {
         var l = document.createElement("a");
@@ -64,7 +63,7 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
             $scope.showGithubWarning = true;
             return;
         }
-        var obj = JSON.parse('{"name": "' + _new_name + '", "url": "' + _new + '"}');
+        var obj = JSON.parse('{"github_user": "' + $scope.github_user  + '", "name": "' + _new_name + '", "url": "' + _new + '"}');
         
         for (var i=0; i < $scope.existing.length; i++){
             if (Object.keys($scope.existing[i])[0] == _new){
