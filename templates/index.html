@@ -8,7 +8,7 @@
 <script src= "{{ url_for('static', filename='submissions.js') }}"></script>
 </head>
 
-<body ng-app="rouletteApp" ng-init="existing={{existing}}">
+<body ng-app="rouletteApp" ng-init="existing={{existing}}; token='{{session['github_token'][0]}}'">
 <br>
 	<!-- {[existing]} -->
 <br>

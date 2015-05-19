@@ -1,4 +1,5 @@
 app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
+    
     $scope.visible = false;
     $scope.stats = {};
     $scope.menuButton = 'submissions';
@@ -19,6 +20,7 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
             method: "get",
             url: "https://api.github.com/repos/" + pathArray[1] + "/" + pathArray[2] + "/languages",
             headers: {'Accept': 'application/json',
+                      'Authorization': 'token ' + $scope.token,
                       'Content-Type': "application/json"},
         }).success(function (response) {
             var total = 0;
