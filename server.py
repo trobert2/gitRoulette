@@ -3,6 +3,9 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 
+#TODO: fix pythonpath and import gitRoulette.utils
+from utils import request_utils
+
 import json
 import os
 
@@ -35,6 +38,7 @@ github = oauth.remote_app(
 def get_github_oauth_token():
     return session.get('github_token')
 
+
 @app.route('/login')
 def login():
     return github.authorize(callback=url_for('authorized', _external=True))
@@ -54,10 +58,24 @@ def authorized():
             request.args['error'],
             request.args['error_description']
         )
+
+    db = connection['mainAPP']
+    collection = db.users
     session['github_token'] = (resp['access_token'], '')
-    #TODO: If it's the first login, add to database so that we can keep track of everything
+
     me = github.get('user')
     session['github_user'] = me.data['login']
+
+    cursor = collection.find({'name': session['github_user']})
+
+    if cursor.count() == 0:
+        languages = utils.get_languages_from_repos(session['github_user'],
+                                                   session['github_token'])
+        usr = {'name': str(session['github_user']),
+               'languages': languages,
+               'achievements': []}
+        collection.insert(usr)
+
     return redirect(url_for('index'))
     #return jsonify(me.data)
 
@@ -67,17 +85,16 @@ def index():
     if 'github_token' not in session:
         return redirect(url_for('login'))
 
-    app.logger.debug(session)
     db = connection['mainAPP']
     collection = db.urls
-    urls = collection.find()
+    urls = collection.find({'github_user': session['github_user']})
     existing_urls = []
 
     for url in urls:
-        usr = {'name': str(url['name']),
-               'url': str(url['url']),
-               'github_user': str(url['github_user'])}
-        existing_urls.append(usr)
+        entry = {'name': str(url['name']),
+                 'url': str(url['url']),
+                 'github_user': str(url['github_user'])}
+        existing_urls.append(entry)
 
     return render_template("index.html", existing=json.dumps(existing_urls))
 
@@ -103,7 +120,6 @@ def add_for_review():
     collection = db.urls
 
     if request.method == 'POST':
-        app.logger.debug(request.data)
         collection.insert(json.loads(request.data))
 
     return "test"
@@ -119,7 +135,7 @@ def remove_from_queue():
     if request.method == 'POST':
         for url in urls:
             collection.remove(url)
-    return "aa"
+    return "test"
 
 if __name__ == '__main__':
     #remove debug=True for production!
