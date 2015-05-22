@@ -1,6 +1,4 @@
-app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
-    
-    $scope.visible = false;
+app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
     $scope.stats = {};
 
     $scope.getLocation = function(href) {
@@ -59,7 +57,11 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
         }
 
         var _newUrl = $scope.getLocation(_new);
-        if (_newUrl.hostname != "github.com"){
+        var pathArray = _newUrl.pathname.split('/');
+        isCommit = pathArray.indexOf('commit') > -1;
+        isPR = pathArray.indexOf('pull') > -1;
+
+        if (_newUrl.hostname != "github.com" || (!isCommit && !isPR)){
             $scope.showGithubWarning = true;
             return;
         }
@@ -79,11 +81,12 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
             headers: {'Content-Type': "application/json"},
             data: obj
         }).success(function () {
-            console.log("success!");
+            // console.log("success!");
         });
         $scope.showUWarning = false;
         $scope.showGithubWarning = false;
         $scope._new = '';
+        $rootScope.$broadcast('addedNewController', 'args');
     };
 
     $scope.removeUrl = function (url) {
@@ -97,7 +100,7 @@ app.controller('submissions', ['$scope', '$http', function ($scope, $http) {
                 headers: {'Content-Type': "application/json"},
                 data: url
             }).success(function () {
-                console.log("success!");
+               // console.log("success!");
             });
             }
         }
