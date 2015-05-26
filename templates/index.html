@@ -16,7 +16,7 @@
 
 <div class="col-md-2 navbar-inner" ng-init="menuButton = 'submissions'" >
     <h2>GitRoulette</h2>
-    <a class="list-group-item" ng-class="{active: menuButton == 'submissions'}" href="" ng-click="menuButton='submissions'">Submited</a></li>
+    <a class="list-group-item" ng-class="{active: menuButton == 'submissions'}" href="" ng-click="menuButton='submissions'">Submisions</a></li>
     <a class="list-group-item" ng-class="{active: menuButton == 'received'}" href="" ng-click="menuButton='received'">Reviews received</a></li>
     <a class="list-group-item" ng-class="{active: menuButton == 'made'}" href="" ng-click="menuButton='made'">Reviews made</a></li>
 </div>
@@ -33,7 +33,7 @@
                 <label for="new-url">URL:</label>
                 <input class="form-control span6" type="text" id="new-url" placeholder="add url for review" ng-model="newUrl" autofocus> 
             </div> 
-            <button class="btn btn-sm btn-primary" type="button" ng-click="addForReview()">Add for review</button>
+            <button class="btn btn-sm btn-primary glyphicon glyphicon-plus" type="button" ng-click="addForReview()"></button>
 
             <span class="text-danger" ng-show="showWarning">Please fill in the fields!</span>
             <span class="text-danger" ng-show="showGithubWarning">Not a github commit or pull request!</span>
@@ -47,7 +47,7 @@
                 <td>Name</td>
                 <td>URL to be reviewed</td>
                 <td>Project stats</td>
-                <td>Remove from list?</td>
+                <td></td>
             </tr>
             <tr ng-repeat="url in existing">
                 <td class="col-md-2">{[url.name]} :</td> 
@@ -56,7 +56,7 @@
                     <option ng-repeat="(key, value) in stats[url.url]">{[key]}: {[value]} %</option> 
                 </td>
 
-                <td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2" ng-click="removeUrl(url)" >remove</button></td>
+                <td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2 glyphicon glyphicon-remove" ng-click="removeUrl(url)" ></button></td>
             </tr>
         </table>
     </div>
@@ -69,11 +69,19 @@
                 <td class="col-md-2">
                 <td class="col-md-6"><center><strong>{[key]}</strong></center></td> 
                 <td class="col-md-2">
+                <td class="col-md-2">
             </tr>
             <tr ng-repeat="entry in value">
                 <td class="col-md-2">{[entry.user.login]} :</td> 
                 <td class="col-md-6">{[entry.body]}</td>
-                <td class="col-md-2"><img src='{[entry.user.avatar_url]}' height="72" width="72"/></td>
+                <td class="col-md-2" align="right"><img src='{[entry.user.avatar_url]}' height="72" width="72"/></td>
+                <td class="col-md-2">
+                <ul class="list-unstyled" align="right">
+                    <li><button class="btn-sm btn-success glyphicon glyphicon-thumbs-up" ng-click="goodJob(entry)"/></li>
+                    <p/>
+                    <li><button class="btn-sm btn-danger glyphicon glyphicon-thumbs-down" ng-click="noThanks(entry)"/></li>
+                </ul>
+                </td>
             </tr>
         </table>
     </div>

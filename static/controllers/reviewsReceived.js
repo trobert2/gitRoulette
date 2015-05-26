@@ -19,7 +19,6 @@ app.controller('reviewsReceived', ['$scope', '$http', function ($scope, $http) {
             if(Object.keys($scope.comments).indexOf() < 0){
                 $scope.comments[pathArray[2]] = []; 
             }
-            // console.log("https://api.github.com/repos/" + pathArray[1] + "/" + pathArray[2] + "/" + pathArray[3] + "s/" + pathArray[4] + "/comments")
 
             $http({
                 method: "get",
@@ -29,13 +28,22 @@ app.controller('reviewsReceived', ['$scope', '$http', function ($scope, $http) {
                           'Content-Type': "application/json"},
             }).success(function (response) {
                 for (var i=0; i < response.length; i++){
+                    //TODO: Compare with when user created account. Only count after that.
+                    // console.log(response[i]["created_at"]);
                     $scope.comments[pathArray[2]].push(response[i]);
                 }
             });
         });
     };
+    $scope.goodJob = function (entry){
+        console.log(entry);
+    }
 
-    $scope.$on('addedNewController', function(event, args) {
+    $scope.noThanks = function (entry){
+        console.log(entry);
+    }
+
+    $scope.$on('urlEntryChange', function(event, args) {
         $scope.getEntryComment();
     });
 }]);

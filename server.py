@@ -26,7 +26,7 @@ github = oauth.remote_app(
     'github',
     consumer_key=os.getenv('CLIENT_ID'),
     consumer_secret=os.getenv('CLIENT_SECRET'),
-    request_token_params={'scope': 'user:email'},
+    request_token_params={'scope': 'user:email,repo,notifications'},
     base_url='https://api.github.com/',
     request_token_url=None,
     access_token_method='POST',
@@ -54,6 +54,8 @@ def logout():
 def authorized():
     resp = github.authorized_response()
     if resp is None:
+        app.logger.debug(request.args['error'])
+        app.logger.debug(request.args['error_description'])
         return 'Access denied: reason=%s error=%s' % (
             request.args['error'],
             request.args['error_description']
@@ -99,20 +101,21 @@ def index():
     return render_template("index.html", existing=json.dumps(existing_urls))
 
 
-# @app.route('/users/', methods=['GET'])
-# def show_users():
-#     db = connection['mainAPP']
-#     collection = db.users
-#     users = collection.find()
-#     existing_users = []
-#
-#     for user in users:
-#         usr = {'username': str(user['username']),
-#                'email': str(user['email']),
-#                'skills': user['skills']}
-#         existing_users.append(usr)
-#
-#     return render_template("users.html", existingUsers=json.dumps(existing_users))
+@app.route('/users/', methods=['GET'])
+def show_users():
+    db = connection['mainAPP']
+    collection = db.users
+    users = collection.find()
+    existing_users = []
+
+    for user in users:
+        app.logger.debug(user)
+        usr = {'username': str(user['name']),
+               'email': str(user['languages']),
+               'skills': user['achievements']}
+        existing_users.append(usr)
+
+    return render_template("users.html", existingUsers=json.dumps(existing_users))
 
 @app.route('/add_for_review', methods=['GET', 'POST'])
 def add_for_review():

@@ -12,6 +12,7 @@ app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope
         // that we can better assciate the output with the table elements 
         var url = $scope.getLocation(gitUrl);
         var pathArray = url.pathname.split('/');
+        //TODO: add route on server and a call here to it. store stats in DB. add update stats button.
 
         $http({
             method: "get",
@@ -86,22 +87,25 @@ app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope
         $scope.showUWarning = false;
         $scope.showGithubWarning = false;
         $scope._new = '';
-        $rootScope.$broadcast('addedNewController', 'args');
+        $rootScope.$broadcast('urlEntryChange', 'args');
     };
 
     $scope.removeUrl = function (url) {
-        for (var i=0; i < $scope.existing.length; i++){
-            if ($scope.existing[i]["url"] == url['url']){
-                $scope.existing.splice(i, 1)
+        if(confirm("Are you sure you want to delete entry \"" + url["name"] + "\"?")){
+            for (var i=0; i < $scope.existing.length; i++){
+                if ($scope.existing[i]["url"] == url['url']){
+                    $scope.existing.splice(i, 1)
 
-            $http({
-                method: "post",
-                url: "/remove_from_list",
-                headers: {'Content-Type': "application/json"},
-                data: url
-            }).success(function () {
-               // console.log("success!");
-            });
+                $http({
+                    method: "post",
+                    url: "/remove_from_list",
+                    headers: {'Content-Type': "application/json"},
+                    data: url
+                }).success(function () {
+                    console.log("success!");
+                });
+                $rootScope.$broadcast('urlEntryChange', 'args');
+                }
             }
         }
     };
