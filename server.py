@@ -75,9 +75,12 @@ def authorized():
                                                    session['github_token'])
         usr = {'name': str(session['github_user']),
                'languages': languages,
+               'skills': [],
                'achievements': []}
         collection.insert(usr)
 
+    #TODO: Redirect to page where we get skills from all the repos that he has and select to add to his acc.
+    # In case no repos, keep a list of skills somewhere and select from that.
     return redirect(url_for('index'))
     #return jsonify(me.data)
 
@@ -95,7 +98,8 @@ def index():
     for url in urls:
         entry = {'name': str(url['name']),
                  'url': str(url['url']),
-                 'github_user': str(url['github_user'])}
+                 'github_user': str(url['github_user']),
+                 'entry_time': str(url['entry_time'])}
         existing_urls.append(entry)
 
     return render_template("index.html", existing=json.dumps(existing_urls))
@@ -119,6 +123,7 @@ def show_users():
 
 @app.route('/add_for_review', methods=['GET', 'POST'])
 def add_for_review():
+    #int((datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).total_seconds() * 1000)
     db = connection['mainAPP']
     collection = db.urls
 

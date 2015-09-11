@@ -28,9 +28,8 @@ app.controller('reviewsReceived', ['$scope', '$http', function ($scope, $http) {
                           'Content-Type': "application/json"},
             }).success(function (response) {
                 for (var i=0; i < response.length; i++){
-                    //TODO: Compare with when user created account. Only count after that.
-                    // console.log(response[i]["created_at"]);
-                    $scope.comments[pathArray[2]].push(response[i]);
+                    // Date.parse(response[i]["created_at"]) >= Date.parse(element['entry_time'])) add later on to show onlyreviews after post
+                        $scope.comments[pathArray[2]].push(response[i]);
                 }
             });
         });

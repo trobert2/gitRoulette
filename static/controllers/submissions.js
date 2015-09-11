@@ -43,7 +43,8 @@ app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope
             $scope.showWarning = true;
             return;
         }
-
+        var date = new Date();
+        var now = Date.parse(date.toUTCString());
         var _new_name = $scope.newName.trim();
         var _new = $scope.newUrl.trim();
 
@@ -66,7 +67,7 @@ app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope
             $scope.showGithubWarning = true;
             return;
         }
-        var obj = JSON.parse('{"github_user": "' + $scope.github_user + '", "name": "' + _new_name + '", "url": "' + _new + '"}');
+        var obj = JSON.parse('{"github_user": "' + $scope.github_user + '", "name": "' + _new_name + '", "url": "' + _new + '", "entry_time": "' + now + '"}');
         
         for (var i=0; i < $scope.existing.length; i++){
             if (Object.keys($scope.existing[i])[0] == _new){
