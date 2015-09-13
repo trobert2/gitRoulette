@@ -1,40 +1,9 @@
-app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+app.controller('submissions', ['$scope', '$http', '$rootScope', 'globalHelpers', function ($scope, $http, $rootScope, globalHelpers) {
     $scope.stats = {};
 
-    $scope.getLocation = function(href) {
-        var l = document.createElement("a");
-        l.href = href;
-        return l;
-    };
-
-    $scope.getStats = function(gitUrl) {
-        // This should take input the whole object. An id needs to be added so
-        // that we can better assciate the output with the table elements 
-        var url = $scope.getLocation(gitUrl);
-        var pathArray = url.pathname.split('/');
-        //TODO: add route on server and a call here to it. store stats in DB. add update stats button.
-
-        $http({
-            method: "get",
-            url: "https://api.github.com/repos/" + pathArray[1] + "/" + pathArray[2] + "/languages",
-            headers: {'Accept': 'application/json',
-                      'Authorization': 'token ' + $scope.token,
-                      'Content-Type': "application/json"},
-        }).success(function (response) {
-            var total = 0;
-            var percentage = {};
-
-            keys = Object.keys(response);
-
-            for (var i=0; i < keys.length; i++){
-                total += response[keys[i]];
-            }
-            for (var i=0; i < keys.length; i++){
-                percentage[keys[i]] = Math.round((response[keys[i]] * 100 / total)*100)/100;
-            }
-            $scope.stats[gitUrl] = percentage
-        });
-    };
+    $scope.getStats = function(gitUrl){
+         $scope.stats[gitUrl] = globalHelpers.getStatsPercentage(gitUrl, $scope.token)
+    }
 
     $scope.addForReview = function () {
         $scope.showWarning = false;
@@ -58,7 +27,7 @@ app.controller('submissions', ['$scope', '$http', '$rootScope', function ($scope
             return;
         }
 
-        var _newUrl = $scope.getLocation(_new);
+        var _newUrl = globalHelpers.getLocation(_new);
         var pathArray = _newUrl.pathname.split('/');
         isCommit = pathArray.indexOf('commit') > -1;
         isPR = pathArray.indexOf('pull') > -1;

@@ -1,6 +1,7 @@
 import requests
 
 def get_languages_from_repos(user, token):
+    # This is not used anymore because the user may not know all the languages in all of his repos.
     headers = {'Authorization': 'token ' + token}
     repos_url = 'https://api.github.com/users/' + user + '/repos'
     repos = requests.get(repos_url, headers=headers)

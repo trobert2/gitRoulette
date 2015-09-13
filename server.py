@@ -69,15 +69,10 @@ def authorized():
     session['github_user'] = me.data['login']
 
     cursor = collection.find({'name': session['github_user']})
-
     if cursor.count() == 0:
-        languages = utils.get_languages_from_repos(session['github_user'],
-                                                   session['github_token'])
-        usr = {'name': str(session['github_user']),
-               'languages': languages,
-               'skills': [],
-               'achievements': []}
-        collection.insert(usr)
+        return redirect(url_for('new_user'), code=302)
+        # languages = utils.get_languages_from_repos(session['github_user'],
+        #                                            session['github_token'])
 
     #TODO: Redirect to page where we get skills from all the repos that he has and select to add to his acc.
     # In case no repos, keep a list of skills somewhere and select from that.
@@ -105,7 +100,7 @@ def index():
     return render_template("index.html", existing=json.dumps(existing_urls))
 
 
-@app.route('/users/', methods=['GET'])
+@app.route('/users', methods=['GET'])
 def show_users():
     db = connection['mainAPP']
     collection = db.users
@@ -115,8 +110,8 @@ def show_users():
     for user in users:
         app.logger.debug(user)
         usr = {'username': str(user['name']),
-               'email': str(user['languages']),
-               'skills': user['achievements']}
+               'skills': str(user['skills']),
+               'achievements': user['achievements']}
         existing_users.append(usr)
 
     return render_template("users.html", existingUsers=json.dumps(existing_users))
@@ -144,6 +139,28 @@ def remove_from_queue():
         for url in urls:
             collection.remove(url)
     return "test"
+
+
+@app.route('/new_user', methods=['GET', 'POST'])
+def new_user():
+    # TODO: works for now, but modify so that a user can add/remove/replace skills;
+    # TODO: case: no skills on github..
+    # TODO: add a dropdown with common skills.
+    if request.method == 'POST':
+        req_data = json.loads(request.data)
+        app.logger.debug(req_data)
+
+        db = connection['mainAPP']
+        collection = db.users
+        cursor = collection.find({'name': session['github_user']})
+
+        if cursor.count() == 0:
+            usr = {'name': str(session['github_user']),
+                   'skills': req_data['skills'],
+                   'achievements': []}
+            collection.insert(usr)
+
+    return render_template("newUser.html")
 
 if __name__ == '__main__':
     #remove debug=True for production!

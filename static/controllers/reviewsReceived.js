@@ -1,17 +1,11 @@
-app.controller('reviewsReceived', ['$scope', '$http', function ($scope, $http) {
+app.controller('reviewsReceived', ['$scope', '$http', 'globalHelpers', function ($scope, $http, globalHelpers) {
     //TODO: Order/group them by project
     $scope.comments = {};
-
-    $scope.getLocation = function(href) {
-        var l = document.createElement("a");
-        l.href = href;
-        return l;
-    };
 
     $scope.getEntryComment = function(){
         //for (var i=0; i < $scope.existing.length; i++){
         $scope.existing.forEach(function(element){
-            var _url = $scope.getLocation(element["url"]);
+            var _url = globalHelpers.getLocation(element["url"]);
             var pathArray = _url.pathname.split('/');
             if (pathArray[3] == "pull"){
                 pathArray[3] = "issue";
@@ -34,6 +28,7 @@ app.controller('reviewsReceived', ['$scope', '$http', function ($scope, $http) {
             });
         });
     };
+
     $scope.goodJob = function (entry){
         console.log(entry);
     }

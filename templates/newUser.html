@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src= "{{ url_for('static', filename='dependencies/checklist-model.js') }}"></script>
+    <script src= "{{ url_for('static', filename='rouletteApp.js') }}"></script>
+    <script src= "{{ url_for('static', filename='controllers/newUser.js') }}"></script>
+</head>
+
+<body>
+<div ng-app="rouletteApp">
+
+<div ng-controller="newUser" ng-init="token='{{session['github_token'][0]}}'; github_user='{{session['github_user']}}'">
+<div ng-init="getUserSkills(github_user)"/>
+<center>
+<form class="form-inline" ng-submit="addUserSkills()" method="post">
+    <table>
+    <tr  ng-repeat="skills in chunkedSkills">
+        <td ng-repeat="skill in skills">
+          <input type="checkbox" checklist-model="user.skills" checklist-value="skill">   {[skill]}  </input>
+        </td>
+    </tr>
+    </table>
+    <span class="text-danger" ng-show="showWarning">No skills to be submited</span>
+    <br>
+    <button class="btn btn-sm btn-primary" type="button" ng-click="addUserSkills()"> Submit skills </button>
+</center>
+
+{[user]}
+
+</div>
+
+</div>
+</body>
+
+</html>
