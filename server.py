@@ -116,14 +116,17 @@ def show_users():
 
     return render_template("users.html", existingUsers=json.dumps(existing_users))
 
-@app.route('/add_for_review', methods=['GET', 'POST'])
+@app.route('/add_for_review', methods=['POST'])
 def add_for_review():
     #int((datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).total_seconds() * 1000)
-    db = connection['mainAPP']
-    collection = db.urls
-
     if request.method == 'POST':
-        collection.insert(json.loads(request.data))
+        req_data = json.loads(request.data)
+        language_list = request_utils.get_url_languages(req_data['url'], session['github_token'][0]).keys()
+        req_data['languages'] = language_list
+
+        db = connection['mainAPP']
+        collection = db.urls
+        collection.insert(req_data)
 
     return "test"
 
