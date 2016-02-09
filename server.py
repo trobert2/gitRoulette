@@ -3,8 +3,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 
-#TODO: fix pythonpath and import gitRoulette.utils
-from utils import request_utils
+from gitRoulette.utils import request_utils
 
 import json
 import os
@@ -63,6 +62,7 @@ def authorized():
 
     db = connection['mainAPP']
     collection = db.users
+    print(resp)
     session['github_token'] = (resp['access_token'], '')
 
     me = github.get('user')
