@@ -2,23 +2,25 @@ app.controller('reviewsReceived', ['$scope', '$http', 'globalHelpers', function 
 
     $scope.getEntryComment = function(){
         $scope.comments = {};
-        //FIXME: We use pathArray[2] too much. replace with variable!
         //FIXME: check if adding a parameter is worth doing and not get all entries.
-        //FIXME: this is crap. restructure all of it. I was drunk. sorry!
-        //for (var i=0; i < $scope.existing.length; i++){
         $scope.existing.forEach(function(element){
             var _url = globalHelpers.getLocation(element["url"]);
             var pathArray = _url.pathname.split('/');
-            if (pathArray[3] == "pull"){
-                pathArray[3] = "issue";
+            github_user = pathArray[1];
+            project = pathArray[2];
+            entry_type = pathArray[3];
+            entry_id = pathArray[4];
+
+            if (entry_type == "pull"){
+                entry_type = "issue";
             }
             if(Object.keys($scope.comments).indexOf() < 0){
-                $scope.comments[pathArray[2]] = {}; 
+                $scope.comments[project] = {}; 
             }
 
             $http({
                 method: "get",
-                url: "https://api.github.com/repos/" + pathArray[1] + "/" + pathArray[2] + "/" + pathArray[3] + "s/" + pathArray[4] + "/comments",
+                url: "https://api.github.com/repos/" + github_user + "/" + project + "/" + entry_type + "s/" + entry_id + "/comments",
                 headers: {'Accept': 'application/json',
                           'Authorization': 'token ' + $scope.token,
                           'Content-Type': "application/json"},
@@ -30,15 +32,12 @@ app.controller('reviewsReceived', ['$scope', '$http', 'globalHelpers', function 
                         // It's good that we group them by project, but we can't tell which so called 'url' is which
                     c.push(response[i])
                 }
-                $scope.comments[pathArray[2]][element.name] = c;
-                console.log("here:", $scope.comments);
+                $scope.comments[project][element.name] = c;
             });
         });
     };
 
     $scope.add_something = function (github_user, comment_id){
-        console.log(github_user);
-        console.log(comment_id);
         var obj = JSON.parse('{"github_user": "' + github_user  + '", "comment_id": "' + comment_id + '"}');
         $http({
             method: "post",
