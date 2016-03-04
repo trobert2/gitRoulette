@@ -23,7 +23,7 @@
 </div>
 <br>
 
-<div ng-show="menuButton=='submissions'" ng-controller="submissions" class"col-centered">
+<div id="submissions" ng-show="menuButton=='submissions'" ng-controller="submissions" class"col-centered">
     <div class="col-md-offset-3">
         <form class="form-inline" id="todo-form" ng-submit="addForReview()" method="post">
             <div class="form-group">
@@ -63,33 +63,36 @@
     </div>
 </div >
 
-<div ng-show="menuButton=='received'" ng-controller="reviewsReceived" ng-init="getEntryComment()">
+<div id="received" ng-show="menuButton=='received'" ng-controller="reviewsReceived" ng-init="getEntryComment()">
     <div class="container col-md-9">
-        <table class="table table-striped" ng-repeat="(key, value) in comments">
-            <tr class="info">
-                <td class="col-md-2">
-                <td class="col-md-6"><center><strong>{[key]}</strong></center></td> 
-                <td class="col-md-2">
-                <td class="col-md-2">
-            </tr>
-            <tr ng-repeat="entry in value">
-                <td class="col-md-2">{[entry.user.login]} :</td> 
-                <td class="col-md-6">{[entry.body]}</td>
-                <td class="col-md-2" align="right"><img src='{[entry.user.avatar_url]}' height="72" width="72"/></td>
-                <td class="col-md-2">
-                <ul class="list-unstyled" align="right">
-                    <li><button class="btn-sm btn-success glyphicon glyphicon-thumbs-up" ng-click="goodJob(entry)"/></li>
-                    <p/>
-                    <li><button class="btn-sm btn-danger glyphicon glyphicon-thumbs-down" ng-click="noThanks(entry)"/></li>
-                </ul>
-                </td>
-            </tr>
+        <table class="table table-striped" ng-repeat="(key1, value) in comments">
+            <!-- FIXME: rename variables -->
+            <th class="primary col-md-6"><center> {[key1]}: </center></th>
+
+            <tbody ng-repeat="(key2, element) in value">
+                <tr ng-repeat="entry in element">
+                    <td class="col-md-3"> {[key2]} ( {[key1]} ) </td>
+                    <td class="col-md-2">{[entry.user.login]} :</td> 
+                    <td class="col-md-6">{[entry.body]}</td>
+                    <td class="col-md-2" align="right"><img src='{[entry.user.avatar_url]}' height="72" width="72"/></td>
+                    <td class="col-md-2">
+                    <ul class="list-unstyled" align="right">
+                        <li><button class="btn-sm btn-success glyphicon glyphicon-thumbs-up" ng-click="add_something(entry.user.login, entry.id)"/></li>
+                        <p/>
+                        <li><button class="btn-sm btn-danger glyphicon glyphicon-thumbs-down" ng-click="noThanks(element)"/></li>
+                    </ul>
+                    </td>
+                </tr>
+            </tbody>
         </table>
+    <button class="btn-sm btn-primary" ng-click="getEntryComment()">Reload Data</button>
     </div>
-    
 </div>
 
-<div ng-show="menuButton=='made'">
+<div id="made" ng-show="menuButton=='made'">
+    <div class="container col-md-9">
+        You have this many somethings: 
+    </div>
 
 </div>
 </body>
