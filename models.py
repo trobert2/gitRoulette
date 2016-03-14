@@ -24,7 +24,8 @@ class Url(db.Model):
 
     def __repr__(self):
         val = "<Url(url='%s', name='%s', github_user='%s', created='%s')>"
-        return  val % (self.url, self.name, self.github_user, self.created)
+        return val % (self.url, self.name, self.github_user, self.created)
+
 
 class Language(db.Model):
     __tablename__ = 'language'
@@ -43,13 +44,15 @@ class GitUser(db.Model):
                              lazy='dynamic')
     achievements = db.relationship('Achievement', backref='gituser',
                                    lazy='dynamic')
-    somethings = db.relationship('Something', backref='gituser', lazy='dynamic')
+    somethings = db.relationship('Something', backref='gituser',
+                                 lazy='dynamic')
 
     def __init__(self, github_user):
         self.github_user = github_user
 
     def __repr__(self):
-        val = "<GitUser(github_user='%s', skills='%s', achievements='%s', somethings='%s')>"
+        val = "<GitUser(github_user='%s', skills='%s', " + \
+            "achievements='%s', somethings='%s')>"
         return val % (self.github_user, self.skills, self.achievements,
                       self.somethings)
 
@@ -60,6 +63,7 @@ class Skill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     skill = db.Column(db.String(15))
     person_id = db.Column(db.Integer, db.ForeignKey('gituser.id'))
+
 
 class Achievement(db.Model):
     __tablename__ = 'achievement'
