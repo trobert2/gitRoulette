@@ -66,6 +66,9 @@ def add_something():
 
         if github_user is not None:
             return "no user"
+        # checks if user is trying to add to himself
+        elif req_data['github_user'] == session['github_user']:
+            return "cannot add to yourself"
         else:
             something = github_user.somethings.filter_by(
                 comment_id=req_data['comment_id']).first()
