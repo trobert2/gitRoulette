@@ -5,6 +5,7 @@ from flask import redirect
 from flask import request
 from flask import session
 from sqlalchemy import and_
+from urlparse import urlparse
 
 from gitRoulette import auth
 from gitRoulette import models
@@ -125,3 +126,29 @@ def new_user():
                 log(_s)
                 db.session.add(_s)
             db.session.commit()
+
+
+@api.route('/get_url_comments/<url_id>')
+@auth.login_required
+def get_url_comments(url_id):
+    url = models.Url.query.filter_by(id=url_id).first()
+
+    pathArray = urlparse(url.url).path.split('/')
+
+    github_user = pathArray[1]
+    project = pathArray[2]
+    entry_type = pathArray[3]
+    entry_id = pathArray[4]
+    if entry_type == "pull":
+        entry_type = "issue"
+
+    endpoint = 'repos/' + github_user + "/" + project + "/"
+    endpoint += entry_type + "s/" + entry_id + "/comments"
+
+    comments = auth.github.get(endpoint)
+
+    # the response has nothing to do with the url_id restructure.
+    # needs work. we need a better standard
+    def lmbd(comment): comment.update({'url_name': url.name})
+    return json.dumps(
+        {project: [lmbd(comment) or comment for comment in comments.data]})

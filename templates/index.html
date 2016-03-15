@@ -45,16 +45,16 @@
     <div class="container col-md-9">
         <table class="table table-striped" >
             <tr>
-                <td>Name</td>
-                <td>URL to be reviewed</td>
-                <td>Project stats</td>
+                <th>Name</td>
+                <th>URL to be reviewed</td>
+                <th>Project stats</td>
                 <td></td>
             </tr>
             <tr ng-repeat="url in existing">
                 <td class="col-md-2">{[url.name]} :</td> 
                 <td class="col-md-6"><a>{[url.url]}</a></td>
-                <td ng-init="getStats(url.url)"> 
-                    <option ng-repeat="(key, value) in stats[url.url]">{[key]}: {[value]} %</option> 
+                <td ng-init="getUrlLanguages(url.id)"> 
+                    <option ng-repeat="value in stats[url.id]"> {[value]} </option> 
                 </td>
 
                 <td class="col-md-2"><button class="btn btn-danger btn-sm col-sm-offset-2 glyphicon glyphicon-remove" ng-click="removeUrl(url)" ></button></td>
@@ -65,13 +65,16 @@
 
 <div id="received" ng-show="menuButton=='received'" ng-controller="reviewsReceived" ng-init="getEntryComment()">
     <div class="container col-md-9">
-        <table class="table table-striped" ng-repeat="(key1, value) in comments">
-            <!-- FIXME: rename variables -->
-            <th class="primary col-md-6"><center> {[key1]}: </center></th>
+        <table class="table table-striped" ng-repeat="(project, values) in comments">
+            <th class="col-md-3"></th>
+            <th class="col-md-2"></th>
+            <th class="col-md-6">{[project]}: </th>
+            <th class="col-md-2"></th>
+            <th class="col-md-2"></th>
 
-            <tbody ng-repeat="(key2, element) in value">
-                <tr ng-repeat="entry in element">
-                    <td class="col-md-3"> {[key2]} ( {[key1]} ) </td>
+            <tbody ng-repeat="entry in values">
+                <tr>
+                    <td class="col-md-3"> {[entry.url_name]} </td>
                     <td class="col-md-2">{[entry.user.login]} :</td> 
                     <td class="col-md-6">{[entry.body]}</td>
                     <td class="col-md-2" align="right"><img src='{[entry.user.avatar_url]}' height="72" width="72"/></td>
@@ -79,7 +82,7 @@
                     <ul class="list-unstyled" align="right">
                         <li><button class="btn-sm btn-success glyphicon glyphicon-thumbs-up" ng-click="add_something(entry.user.login, entry.id)"/></li>
                         <p/>
-                        <li><button class="btn-sm btn-danger glyphicon glyphicon-thumbs-down" ng-click="noThanks(element)"/></li>
+                        <li><button class="btn-sm btn-danger glyphicon glyphicon-thumbs-down" ng-click="noThanks(entry.id)"/></li>
                     </ul>
                     </td>
                 </tr>

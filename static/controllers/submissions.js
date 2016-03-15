@@ -1,8 +1,10 @@
 app.controller('submissions', ['$scope', '$http', '$rootScope', 'globalHelpers', function ($scope, $http, $rootScope, globalHelpers) {
     $scope.stats = {};
 
-    $scope.getStats = function(gitUrl){
-         $scope.stats[gitUrl] = globalHelpers.getStatsPercentage(gitUrl, $scope.token)
+    $scope.getUrlLanguages = function(gitUrlId){
+         globalHelpers.getUrlLanguagesPromise(gitUrlId).then( function (response){
+             $scope.stats[gitUrlId] = response.data.languages;
+         });
     }
 
     $scope.addForReview = function () {
