@@ -131,6 +131,9 @@ def new_user():
 @api.route('/get_url_comments/<url_id>')
 @auth.login_required
 def get_url_comments(url_id):
+    # FIXME: at the moment we only take pulls comments, no issues.
+    # issues will show comments in "conversation" too.
+    # Should we do another request if entry_type is pull?
     url = models.Url.query.filter_by(id=url_id).first()
 
     pathArray = urlparse(url.url).path.split('/')
@@ -139,8 +142,6 @@ def get_url_comments(url_id):
     project = pathArray[2]
     entry_type = pathArray[3]
     entry_id = pathArray[4]
-    if entry_type == "pull":
-        entry_type = "issue"
 
     endpoint = 'repos/' + github_user + "/" + project + "/"
     endpoint += entry_type + "s/" + entry_id + "/comments"
@@ -149,6 +150,31 @@ def get_url_comments(url_id):
 
     # the response has nothing to do with the url_id restructure.
     # needs work. we need a better standard
-    def lmbd(comment): comment.update({'url_name': url.name})
+    def lmbd(comment): comment.update({'url_name': url.name, 'url_id': url.id})
     return json.dumps(
         {project: [lmbd(comment) or comment for comment in comments.data]})
+
+
+@api.route('/decline_comment', methods=['POST'])
+@auth.login_required
+def decline_comment():
+    req_data = json.loads(request.data)
+    url = models.Url.query.filter_by(id=req_data["url_id"]).first()
+
+    pathArray = urlparse(url.url).path.split('/')
+    github_user = pathArray[1]
+    project = pathArray[2]
+    entry_type = pathArray[3]
+    entry_id = pathArray[4]
+
+    endpoint = 'repos/' + github_user + "/" + project + "/"
+    endpoint += entry_type + "s/" + entry_id + "/comments"
+
+    post_data = {'body': 'No thanks!',
+                 'in_reply_to': int(req_data["comment_id"])}
+    headers = {'Accept': 'application/json',
+               'Content-Type': 'application/json; charset=utf-8'}
+
+    resp = auth.github.post(endpoint, data=post_data, headers=headers,
+                            format='json')
+    return json.dumps({"response": resp.data})

@@ -44,7 +44,16 @@ app.controller('reviewsReceived', ['$scope', '$http', 'globalHelpers', function 
         });
     }
 
-    $scope.noThanks = function (element){
-        console.log(element);
+    $scope.noThanks = function (comment_id, url_id){
+        var obj = JSON.parse('{"comment_id": "' + comment_id  + '", "url_id": "' + url_id + '"}');
+        $http({
+            method: "post",
+            url: "/decline_comment",
+            data: obj,
+            headers: {'Accept': 'application/json',
+                      'Content-Type': "application/json"},
+        }).success(function (response) {
+            // console.log(response);
+        });
     }
 }]);
