@@ -1,7 +1,6 @@
 import json
 
 from flask import Blueprint
-from flask import redirect
 from flask import request
 from flask import session
 from sqlalchemy import and_
@@ -106,9 +105,9 @@ def get_url_languages(url_id):
     return json.dumps(ret_val)
 
 
-@api.route('/new_user', methods=['POST'])
+@api.route('/add_new_user', methods=['POST'])
 @auth.login_required
-def new_user():
+def add_new_user():
     # TODO: modify so that a user can add/remove/replace skills;
     # TODO: case: no skills on github..
     # TODO: add a dropdown with common skills.
@@ -123,9 +122,9 @@ def new_user():
             db.session.add(gituser)
             for skill in req_data['skills']:
                 _s = models.Skill(skill=skill, gituser=gituser)
-                log(_s)
                 db.session.add(_s)
             db.session.commit()
+            return "success"
 
 
 @api.route('/get_url_comments/<url_id>')
@@ -178,3 +177,16 @@ def decline_comment():
     resp = auth.github.post(endpoint, data=post_data, headers=headers,
                             format='json')
     return json.dumps({"response": resp.data})
+
+
+@api.route('/get_newuser_skills/<github_user>')
+@auth.login_required
+def get_newuser_skills(github_user):
+    endpoint = "/users/" + github_user + "/repos"
+    repos = auth.github.get(endpoint).data
+    languages = [language for repo in repos for language in
+                 request_utils.get_url_languages(
+                    repo["html_url"], session['github_token'][0]).keys()]
+    print(languages)
+
+    return json.dumps(list(set(languages)))

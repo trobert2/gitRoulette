@@ -19,11 +19,9 @@
 <center>
 <form class="form-inline" ng-submit="addUserSkills()" method="post">
     <table>
-    <tr  ng-repeat="skills in chunkedSkills">
-        <td ng-repeat="skill in skills">
-          <input type="checkbox" checklist-model="user.skills" checklist-value="skill">   {[skill]}  </input>
+        <td ng-repeat="skill in chunkedSkills">
+          <input type="checkbox" checklist-model="user.skills" checklist-value="skill"> {[skill]} </input>
         </td>
-    </tr>
     </table>
     <span class="text-danger" ng-show="showWarning">No skills to be submited</span>
     <br>
